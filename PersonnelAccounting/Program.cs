@@ -38,35 +38,16 @@ namespace PersonnelAccounting
                 switch (userInput)
                 {
                     case IdAddDossierCommand:
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        
-                        Console.WriteLine("Заполните ФИО сотрудника:");
-                        string addedFullNameEmployee = Console.ReadLine();
-                        Console.WriteLine("Заполните должность сотрудника:");
-                        string addedPositionEmployee = Console.ReadLine();
-
-                        AddDossier(ref fullNameEmployees, ref positionEmployees, addedFullNameEmployee, addedPositionEmployee);
+                        AddDossier(ref fullNameEmployees, ref positionEmployees);
                         break;
                     case IdGetAllDossiersCommand:
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-
-                        GetAllDossiers(fullNameEmployees, positionEmployees);
+                        ShowAllDossiers(fullNameEmployees, positionEmployees);
                         break;
                     case IdDeleteDossierCommand:
-                        Console.ForegroundColor = ConsoleColor.Red;
-
-                        Console.WriteLine("Заполните ФИО сотрудника, которого хотите удалить из досье:");
-                        string remoteFullNameEmployee = Console.ReadLine();
-
-                        DeleteDossier(ref fullNameEmployees, ref positionEmployees, remoteFullNameEmployee);
+                        DeleteDossier(ref fullNameEmployees, ref positionEmployees);
                         break;
                     case IdSearchByLastNameCommand:
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-
-                        Console.WriteLine("Введите Фамилию сотрудника, которого хотите найти:");
-                        string surname = Console.ReadLine();
-
-                        SearchByLastName(fullNameEmployees, positionEmployees, surname);
+                        SearchByLastName(fullNameEmployees, positionEmployees);
                         break;
                     case IdExecuteExitCommand:
                         isOpen = ExecuteExit();
@@ -75,31 +56,31 @@ namespace PersonnelAccounting
             }
         }
 
-        static void AddDossier(ref string[] fullNameArray, ref string[] positionArray, string addedFullName, string addedPosition)
+        static void AddDossier(ref string[] fullNameArray, ref string[] positionArray)
         {
-            int totalSizeArrays = fullNameArray.Length;
-            string[] tempFullNameArray = new string[fullNameArray.Length + 1];
-            string[] tempPositionArray = new string[positionArray.Length + 1];
+            Console.ForegroundColor = ConsoleColor.Green;
 
-            for (int currentIndex = 0; currentIndex < totalSizeArrays; currentIndex++)
-            {
-                tempFullNameArray[currentIndex] = fullNameArray[currentIndex];
-                tempPositionArray[currentIndex] = positionArray[currentIndex];
-            }
+            Console.WriteLine("Заполните ФИО сотрудника:");
+            string addedFullName = Console.ReadLine();
+            Console.WriteLine("Заполните должность сотрудника:");
+            string addedPosition = Console.ReadLine();
 
-            tempFullNameArray[tempFullNameArray.Length - 1] = addedFullName;
-            tempPositionArray[tempPositionArray.Length - 1] = addedPosition;
+            IncreaseArray(ref fullNameArray);
+            IncreaseArray(ref positionArray);
 
-            fullNameArray = tempFullNameArray;
-            positionArray = tempPositionArray;
+            fullNameArray[fullNameArray.Length - 1] = addedFullName;
+            positionArray[positionArray.Length - 1] = addedPosition;
+
 
             Console.WriteLine($"Добавлено новое досье: ФИО: {addedFullName} | Позиция: {addedPosition}");
             Console.ReadKey();
             Console.Clear();
         }
 
-        static void GetAllDossiers(string[] fullNameArray, string[] positionArray)
+        static void ShowAllDossiers(string[] fullNameArray, string[] positionArray)
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
             int totalSizeArrays = fullNameArray.Length;
 
             Console.WriteLine($"Все досье:");
@@ -112,38 +93,34 @@ namespace PersonnelAccounting
             Console.Clear();
         }
 
-        static void DeleteDossier(ref string[] fullNameArray, ref string[] positionArray, string remoteFullName)
+        static void DeleteDossier(ref string[] fullNameArray, ref string[] positionArray)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
+
+            Console.WriteLine("Заполните ФИО сотрудника, которого хотите удалить из досье:");
+            string remoteFullName = Console.ReadLine();
+
             int totalSizeArrays = fullNameArray.Length;
-            string[] tempFullNameArray = new string[fullNameArray.Length - 1];
-            string[] tempPositionArray = new string[positionArray.Length - 1];
+            
 
             for (int currentIndex = 0; currentIndex < totalSizeArrays; currentIndex++)
             {
                 totalSizeArrays--;
                 if (fullNameArray[currentIndex].Equals(remoteFullName))
                 {
-                    for (int currentIndex2 = 0; currentIndex2 < currentIndex; currentIndex2++)
-                    {
-                        tempFullNameArray[currentIndex2] = fullNameArray[currentIndex2];
-                        tempPositionArray[currentIndex2] = positionArray[currentIndex2];
-                    }
-                    for (int currentIndex3 = currentIndex; currentIndex3 <= totalSizeArrays; currentIndex3++)
-                    {
-                        tempFullNameArray[currentIndex3] = fullNameArray[currentIndex3 + 1];
-                        tempPositionArray[currentIndex3] = positionArray[currentIndex3 + 1];
-                    }
-                    fullNameArray = tempFullNameArray;
-                    positionArray = tempPositionArray;
-
-                    Console.WriteLine($"Сотрудник {remoteFullName} удален!");
+                    DecreaseArray(ref fullNameArray, currentIndex);
+                    DecreaseArray(ref positionArray, currentIndex);
                 }
             }
-
         }
 
-        static void SearchByLastName(string[] fullNameArray, string[] positionArray, string surname)
+        static void SearchByLastName(string[] fullNameArray, string[] positionArray)
         {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+
+            Console.WriteLine("Введите Фамилию сотрудника, которого хотите найти:");
+            string surname = Console.ReadLine();
+
             for (int currentIndex = 0; currentIndex < fullNameArray.Length; currentIndex++)
             {
                 string[] fullName = fullNameArray[currentIndex].Split(' ');
@@ -160,6 +137,34 @@ namespace PersonnelAccounting
             Console.WriteLine("Выход...");
 
             return false;
+        }
+
+        static void IncreaseArray(ref string[] array)
+        {
+            int totalSizeArrays = array.Length;
+            string[] tempArray = new string[array.Length + 1];
+
+            for (int currentIndex = 0; currentIndex < totalSizeArrays; currentIndex++)
+            {
+                tempArray[currentIndex] = array[currentIndex];
+            }
+
+            array = tempArray;
+        }
+
+        static void DecreaseArray(ref string[] array, int decreaseIndex)
+        {
+            string[] tempFullNameArray = new string[array.Length - 1];
+
+            for (int currentIndex = 0; currentIndex < decreaseIndex; currentIndex++)
+            {
+                tempFullNameArray[currentIndex] = array[currentIndex];
+            }
+            for (int currentIndex2 = decreaseIndex; currentIndex2 <= array.Length; currentIndex2++)
+            {
+                tempFullNameArray[currentIndex2] = array[currentIndex2 + 1];
+            }
+            array = tempFullNameArray;
         }
     }
 }
