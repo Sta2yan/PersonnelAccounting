@@ -65,12 +65,8 @@ namespace PersonnelAccounting
             Console.WriteLine("Заполните должность сотрудника:");
             string addedPosition = Console.ReadLine();
 
-            IncreaseArray(ref fullNameArray);
-            IncreaseArray(ref positionArray);
-
-            fullNameArray[fullNameArray.Length - 1] = addedFullName;
-            positionArray[positionArray.Length - 1] = addedPosition;
-
+            IncreaseArray(ref fullNameArray, addedFullName);
+            IncreaseArray(ref positionArray, addedPosition);
 
             Console.WriteLine($"Добавлено новое досье: ФИО: {addedFullName} | Позиция: {addedPosition}");
             Console.ReadKey();
@@ -105,13 +101,18 @@ namespace PersonnelAccounting
 
             for (int currentIndex = 0; currentIndex < totalSizeArrays; currentIndex++)
             {
-                totalSizeArrays--;
                 if (fullNameArray[currentIndex].Equals(remoteFullName))
                 {
-                    DecreaseArray(ref fullNameArray, currentIndex);
-                    DecreaseArray(ref positionArray, currentIndex);
+                    Console.WriteLine($"Найден сотрудник под номером: {currentIndex + 1}. " +
+                                      $"ФИО: {fullNameArray[currentIndex]} | Должность: {positionArray[currentIndex]}");
                 }
             }
+
+            Console.Write("\nВведите номер сотрудника, которого хотите удалить: ");
+            int deleteIndex = Convert.ToInt32(Console.ReadLine()) - 1;
+
+            DecreaseArray(ref fullNameArray, deleteIndex);
+            DecreaseArray(ref positionArray, deleteIndex);
         }
 
         static void SearchByLastName(string[] fullNameArray, string[] positionArray)
@@ -139,7 +140,7 @@ namespace PersonnelAccounting
             return false;
         }
 
-        static void IncreaseArray(ref string[] array)
+        static void IncreaseArray(ref string[] array, string name = "")
         {
             int totalSizeArrays = array.Length;
             string[] tempArray = new string[array.Length + 1];
@@ -150,20 +151,25 @@ namespace PersonnelAccounting
             }
 
             array = tempArray;
+
+            array[array.Length - 1] = name;
         }
 
-        static void DecreaseArray(ref string[] array, int decreaseIndex)
+        static void DecreaseArray(ref string[] array, int decreaseIndex = 1)
         {
+
             string[] tempFullNameArray = new string[array.Length - 1];
 
-            for (int currentIndex = 0; currentIndex < decreaseIndex; currentIndex++)
+            
+            for (int currentIndex2 = 0; currentIndex2 < decreaseIndex; currentIndex2++)
             {
-                tempFullNameArray[currentIndex] = array[currentIndex];
+                tempFullNameArray[currentIndex2] = array[currentIndex2];
             }
-            for (int currentIndex2 = decreaseIndex; currentIndex2 <= array.Length; currentIndex2++)
+            for (int currentIndex2 = decreaseIndex; currentIndex2 < array.Length - 1; currentIndex2++)
             {
                 tempFullNameArray[currentIndex2] = array[currentIndex2 + 1];
             }
+            
             array = tempFullNameArray;
         }
     }
